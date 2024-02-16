@@ -1,4 +1,4 @@
-from src.main.lab import execute_json_agent
+from lab import execute_json_agent
 
 # ------------------------------------------------------------------------------
 # Starter Code - TOUCH AT YOUR OWN RISK!

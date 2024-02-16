@@ -1,10 +1,13 @@
 import json
 import os
+from dotenv import load_dotenv
 
 from langchain_community.agent_toolkits import JsonToolkit, create_json_agent
 from langchain_community.chat_models import ChatHuggingFace
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 from langchain_community.tools.json.tool import JsonSpec
+
+load_dotenv()
 
 # ------------------------------------------------------------------------------
 # Initialize Variables - DO NOT TOUCH
@@ -18,6 +21,7 @@ questions = [
 
 llm = HuggingFaceEndpoint(
         endpoint_url=os.environ['LLM_ENDPOINT'],
+        huggingfacehub_api_token=os.getenv('HF_TOKEN'), 
         task="text2text-generation",
         model_kwargs={
             "max_new_tokens": 200
@@ -53,6 +57,14 @@ def execute_json_agent():
     :return: A list of responses from the JSON agent.
     """
     # Write Code Below
+    response = []
 
-    # Replace with return statement
-    raise NotImplementedError("This function has not been implemented yet.")
+    json_spec = JsonSpec(dict_=data, max_value_length=1000)
+
+    json_toolkit = JsonToolkit(spec=json_spec)
+
+    json_agent = create_json_agent(llm=chat_model, toolkit=json_toolkit, verbose=True)
+
+    for question in questions:
+        response.append(json_agent.run(question))
+    return response
